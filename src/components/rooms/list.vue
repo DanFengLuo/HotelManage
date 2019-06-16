@@ -7,14 +7,22 @@
           <el-input placeholder="请输入客房编号" v-model="search.id" class="input-with-select" style="width: 200px">
             <el-button slot="append" icon="el-icon-search" @click="findData"></el-button>
           </el-input>
-          <!--<el-select v-model="search.goodsTypeid" filterable placeholder="请选择商品类型" style="width: 200px"  @change="findData">-->
-          <!--<el-option-->
-            <!--v-for="item in goodsTypes"-->
-            <!--:key="item.id"-->
-            <!--:label="item.goodsTypename"-->
-            <!--:value="item.id">-->
-          <!--</el-option>-->
-        <!--</el-select>-->
+          <el-select v-model="search.floorId" filterable placeholder="请选择楼层信息" style="width: 200px"  @change="findData">
+          <el-option
+            v-for="item in floors"
+            :key="item.id"
+            :label="item.floorName"
+            :value="item.id">
+          </el-option>
+        </el-select>
+          <el-select v-model="search.roomTypeid" filterable placeholder="请选择类型信息" style="width: 200px"  @change="findData">
+            <el-option
+              v-for="item in guestTypes"
+              :key="item.id"
+              :label="item.typeName"
+              :value="item.id">
+            </el-option>
+          </el-select>
         </el-col>
 
 
@@ -31,7 +39,7 @@
         label="编号">
       </el-table-column>
       <el-table-column
-        prop="roomType"
+        prop="guestType.typeName"
         label="客房类型">
       </el-table-column>
       <el-table-column
@@ -39,7 +47,7 @@
         label="客房状态">
       </el-table-column>
       <el-table-column
-        prop="floorName"
+        prop="floor.floorName"
         label="楼层">
       </el-table-column>
       <el-table-column
@@ -89,15 +97,20 @@
     data () {
       return {
         search:{
-          id:""
+          id:"",
+          floorId:"",
+          roomTypeid:""
         },
         queryParams:{
           pageNo:1,
           pageSize:10,
-          id:""
+          id:"",
+          floorId:"",
+          roomTypeid:""
         },
-        tableData:{}
-//        goodsTypes:{}
+        tableData:{},
+        floors:{},
+        guestTypes:{}
       }
     },
     created(){
@@ -117,9 +130,12 @@
         this.get("rooms/list",(data)=>{
           this.tableData=data;
         },this.queryParams);
-//        this.get("goods/getAllGoodsType",(data)=>{
-//          this.goodsTypes=data;
-//        });
+        this.get("rooms/getAllFloor",(data)=>{
+          this.floors=data;
+        });
+        this.get("rooms/getAllGuestType",(data)=>{
+          this.guestTypes=data;
+        });
       },
       changePageNo(i){
         this.queryParams.pageNo=i;

@@ -1,19 +1,18 @@
 <template>
   <div style="margin-top: 15px;">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="客房类型" prop="roomType">
-            <el-input v-model="ruleForm.roomType"></el-input>
+        <el-form-item label="客房类型" prop="roomTypeid">
+          <el-select v-model="ruleForm.roomTypeid" placeholder="客房类型">
+            <el-option v-for="entry in guestTypes" :label="entry.typeName" :value="entry.id" :key="entry.id"></el-option>
+          </el-select>
         </el-form-item>
-        <!--<el-form-item label="类别" prop="goodsTypeid">-->
-          <!--<el-select v-model="ruleForm.goodsTypeid" placeholder="请选择类型">-->
-            <!--<el-option v-for="entry in goodsTypes" :label="entry.goodsTypename" :value="entry.id" :key="entry.id"></el-option>-->
-          <!--</el-select>-->
-        <!--</el-form-item>-->
         <el-form-item label="客房状态" prop="status">
             <el-input   v-model="ruleForm.status"></el-input>
         </el-form-item>
-        <el-form-item label="楼层" prop="floorName">
-            <el-input   v-model="ruleForm.floorName"></el-input>
+        <el-form-item label="楼层" prop="floorId">
+        <el-select v-model="ruleForm.floorId" placeholder="请选择楼层信息">
+        <el-option v-for="entry in floors" :label="entry.floorName" :value="entry.id" :key="entry.id"></el-option>
+        </el-select>
         </el-form-item>
         <el-form-item label="标准价格" prop="normalPrice">
           <el-input   v-model="ruleForm.normalPrice"></el-input>
@@ -45,12 +44,13 @@
     data () {
         name:"roomsedit"
       return {
-          goodsTypes:[],
+          floors:[],
+          guestTypes:[],
           ruleForm:{
             id:"",
-            roomType:"",
+            roomTypeid:"",
             status:"",
-            floorName:"",
+            floorId:"",
             normalPrice:"",
             discountPrice:"",
             gvipPrice:"",
@@ -58,19 +58,22 @@
             remarks:""
           },
           rules: {
-            roomType: [
-                { required: true, message: '请输入商品名称', trigger: 'blur' },
-                { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
-            ]
+//            roomType: [
+//                { required: true, message: '请输入商品名称', trigger: 'blur' },
+//                { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+//            ]
         },
         buttonText:"创建"
 
       }
     },
     created(){
-//        this.get("rooms/getAllGoodsType",(data)=>{
-//          this.goodsTypes=data;
-//        });
+        this.get("rooms/getAllFloor",(data)=>{
+          this.floors=data;
+        });
+      this.get("rooms/getAllGuestType",(data)=>{
+        this.guestTypes=data;
+      });
         if(this.id){
              this.get("rooms/getOne",(data)=>{
                 this.ruleForm=data;
