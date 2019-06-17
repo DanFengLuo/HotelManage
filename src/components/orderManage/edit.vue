@@ -50,9 +50,9 @@
         <el-form-item label="会员编号" prop="memberId">
             <el-input  v-model="ruleForm.memberId"></el-input>
         </el-form-item>
-        <el-form-item label="预定状态" prop="bookStatus">
-            <el-input  v-model="ruleForm.bookStatus"></el-input>
-        </el-form-item>
+<!--        <el-form-item label="预定状态" prop="bookStatus">-->
+<!--            <el-input  v-model="ruleForm.bookStatus"></el-input>-->
+<!--        </el-form-item>-->
         <el-form-item label="备注" prop="remarks">
             <el-input  v-model="ruleForm.remarks"></el-input>
         </el-form-item>

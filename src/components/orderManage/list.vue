@@ -5,13 +5,36 @@
         <el-col :span="2"><el-button type="primary" @click="add">添加</el-button></el-col>
         <el-col :span="22">
           <el-input placeholder="请输入预定编号" v-model="search.id" class="input-with-select" style="width: 200px">
-            <!--<el-select v-model="search.active" style="width:80px" slot="prepend" placeholder="请选择">-->
-            <!--<el-option label="全部" value=""></el-option>-->
-            <!--<el-option label="有效" value="1"></el-option>-->
-            <!--<el-option label="失效" value="0"></el-option>-->
-            <!--</el-select>-->
             <el-button slot="append" icon="el-icon-search" @click="findData"></el-button>
           </el-input>
+          <el-input placeholder="请输入房间编号" v-model="search.originalRoomId" class="input-with-select" style="width: 200px">
+            <el-button slot="append" icon="el-icon-search" @click="findData"></el-button>
+          </el-input>
+<!--          <el-input placeholder="请输入预定状态" v-model="search.bookStatus" class="input-with-select" style="width: 200px">-->
+<!--            <el-button slot="append" icon="el-icon-search" @click="findData"></el-button>-->
+<!--          </el-input>-->
+          <el-select v-model="search.bookStatus" filterable placeholder="请选择预定状态" style="width: 200px"  @change="findData">
+            <el-option
+              :key="search.bookStatus"
+              :label="已预定"
+              :value="0">已预定
+            </el-option>
+            <el-option
+              :key="search.bookStatus"
+              :label="已取消"
+              :value="1">已取消
+            </el-option>
+            <el-option
+              :key="search.bookStatus"
+              :label="已入住"
+              :value="2">已入住
+            </el-option>
+            <el-option
+              :key="search.bookStatus"
+              :label="已取消"
+              :value="3">已取消
+            </el-option>
+          </el-select>
         </el-col>
       </el-row>
 
@@ -86,7 +109,8 @@
 <!--      </el-table-column>-->
       <el-table-column
         prop="bookStatus"
-        label="预定状态">
+        label="预定状态"
+      :formatter="bookStatusformat">
       </el-table-column>
       <el-table-column
         prop="remarks"
@@ -123,12 +147,16 @@
     data () {
       return {
         search:{
-          id:""
+          id:"",
+          originalRoomId:"",
+          bookStatus:""
         },
         queryParams:{
           pageNo:1,
           pageSize:10,
-          id:""
+          id:"",
+          originalRoomId:"",
+          bookStatus:""
         },
         tableData:{}
       }
@@ -150,6 +178,16 @@
         this.get("orderManage/list",(data)=>{
           this.tableData=data;
         },this.queryParams);
+      },
+      bookStatusformat(row, column, cellValue, index){
+        if(cellValue==0)
+          return "已预定";
+        else if(cellValue==1)
+          return "已取消";
+        else if(cellValue==2)
+          return "已入住";
+        else if(cellValue==1)
+          return "已退房";
       },
 //        activeformat(row, column, cellValue, index){
 //          return cellValue==0?"失效":"有效";
@@ -193,6 +231,7 @@
       deltext(active){
         return active==1?"删除":"恢复"
       }
+
     }
   }
 </script>
