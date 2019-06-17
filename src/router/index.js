@@ -55,6 +55,16 @@ export default new Router({
           path:'/rooms',
           name:'rooms',
           component:Rooms
+        },
+        {
+          path:'/orderManage',
+          name:'orderManage',
+          component:OrderManage
+        },
+        {
+          path:'/orderlist',
+          name:'orderlist',
+          component:Orderlist
         }
       ]
     }

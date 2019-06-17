@@ -19,8 +19,6 @@
       </el-row>
     </div>
 
-
-
     <el-table
       :data="tableData.list"
       border
@@ -134,7 +132,7 @@
 </template>
 
 <script>
-  import EditOrderlist from '@/components/orderlist/edit'
+  import EditOrderlist from '@/components/orderManage/edit'
   export default {
     inject:['reload'],
     name:"ordermanage",

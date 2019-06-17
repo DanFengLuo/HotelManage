@@ -38,7 +38,7 @@
             v-model="ruleForm.arrivalTime"
             type="datetime"
             value-format="yyyy-MM-dd HH:mm:ss"
-            :picker-options="pickerOptions"
+            :picker-options="pickerOptions0"
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
@@ -47,7 +47,7 @@
               v-model="ruleForm.leaveTime"
               type="datetime"
               value-format="yyyy-MM-dd HH:mm:ss"
-              :picker-options="pickerOptions0"
+              :picker-options="pickerOptions1"
               placeholder="选择日期">
             </el-date-picker>
         </el-form-item>
@@ -152,7 +152,7 @@
         //     return time.getTime() < Date.now();
         //   }
         // },
-        pickerOptions: {
+        pickerOptions0: {
           disabledDate: (time) => {
             if (this.ruleForm.leaveTime != "") {
               return  time.getTime() >(new Date(this.ruleForm.leaveTime).getTime())- 8.64e7||Date.now()>time.getTime() ;
@@ -161,7 +161,7 @@
             }
           },
         },
-        pickerOptions0: {
+        pickerOptions1: {
           disabledDate: (time) => {
             if (this.ruleForm.arrivalTime !== "") {
               return time.getTime() < (new Date(this.ruleForm.arrivalTime).getTime())+24 * 3600 * 1000;
