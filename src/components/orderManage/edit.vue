@@ -38,7 +38,7 @@
             v-model="ruleForm.arrivalTime"
             type="datetime"
             value-format="yyyy-MM-dd HH:mm:ss"
-            :picker-options="pickerOptions0"
+            :picker-options="pickerOptions"
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
@@ -146,17 +146,33 @@
             bookStatus:"",
             remarks:""
           },
+        /*时间选择 */
+        // pickerOptions0: {
+        //   disabledDate(time) {
+        //     return time.getTime() < Date.now();
+        //   }
+        // },
+        pickerOptions: {
+          disabledDate: (time) => {
+            if (this.ruleForm.leaveTime != "") {
+              return  time.getTime() >(new Date(this.ruleForm.leaveTime).getTime())- 8.64e7||Date.now()>time.getTime() ;
+            }else{
+              return time.getTime()<Date.now();
+            }
+          },
+        },
         pickerOptions0: {
-          disabledDate(time) {
-            return time.getTime() < Date.now();
+          disabledDate: (time) => {
+            if (this.ruleForm.arrivalTime !== "") {
+              return time.getTime() < (new Date(this.ruleForm.arrivalTime).getTime())+24 * 3600 * 1000;
+            }else{
+              return time.getTime()<Date.now();
+            }
           }
         },
 
 
-
-
-
-      rules: {
+        rules: {
           /*验证手机号*/
         phone: [
           { required: true, trigger: 'blur',validator: checkPhone }//设置全局变量

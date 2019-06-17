@@ -43,7 +43,6 @@
         </el-form>
   </div>
 </template>
-
 <script>
   export default {
       inject:['reload'],
@@ -67,9 +66,7 @@
             memberId:"",
             bookStatus:"",
             remarks:"",
-
           },
-
       }
     },
     created(){
@@ -79,20 +76,11 @@
                 console.log(this.ruleForm);
             },{id:this.id});
         }
-
     },
     components: {
 
     },
     methods:{
-    //     resetForm(formName){
-    //          this.$refs[formName].resetFields();
-    //     },
-    //     submitForm(formName){
-    //         let url="";
-    //         url="orderManager/update";
-    //         this.post(formName,url,this.ruleForm);
-    //     }
     }
   };
 
