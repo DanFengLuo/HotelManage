@@ -4,17 +4,24 @@
       <el-row>
         <el-col :span="2"><el-button type="primary" @click="add">添加</el-button></el-col>
         <el-col :span="22">
-          <el-input placeholder="请输入客房编号" v-model="search.id" class="input-with-select" style="width: 200px">
+          <el-input placeholder="请输入客房编号" v-model="search.id" class="input-with-select" style="width: 340px">
+            <!--根据客房状态查询-->
+            <el-select v-model="search.status" style="width:120px" slot="prepend" placeholder="请选择状态">
+              <el-option label="全部" value=""></el-option>
+              <el-option label="空房" value="0"></el-option>
+              <el-option label="已预订" value="1"></el-option>
+              <el-option label="入住" value="2"></el-option>
+            </el-select>
             <el-button slot="append" icon="el-icon-search" @click="findData"></el-button>
           </el-input>
           <el-select v-model="search.floorId" filterable placeholder="请选择楼层信息" style="width: 200px"  @change="findData">
-          <el-option
-            v-for="item in floors"
-            :key="item.id"
-            :label="item.floorName"
-            :value="item.id">
-          </el-option>
-        </el-select>
+            <el-option
+              v-for="item in floors"
+              :key="item.id"
+              :label="item.floorName"
+              :value="item.id">
+            </el-option>
+          </el-select>
           <el-select v-model="search.roomTypeid" filterable placeholder="请选择类型信息" style="width: 200px"  @change="findData">
             <el-option
               v-for="item in guestTypes"
@@ -23,9 +30,10 @@
               :value="item.id">
             </el-option>
           </el-select>
+          <el-input placeholder="请输入价格" v-model="search.normalPrice" class="input-with-select" style="width: 200px">
+            <el-button slot="append" icon="el-icon-search" @click="findData"></el-button>
+          </el-input>
         </el-col>
-
-
 
       </el-row>
     </div>
@@ -44,7 +52,8 @@
       </el-table-column>
       <el-table-column
         prop="status"
-        label="客房状态">
+        label="客房状态"
+        :formatter="statusformat">
       </el-table-column>
       <el-table-column
         prop="floor.floorName"
@@ -66,15 +75,17 @@
         prop="svipPrice"
         label="Vip会员价">
       </el-table-column>
-      <el-table-column
-        prop="remarks"
-        label="备注">
-      </el-table-column>
+      <!--<el-table-column-->
+      <!--prop="remarks"-->
+      <!--label="备注">-->
+      <!--</el-table-column>-->
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button @click="edit(scope.row)" type="text" size="small">修改</el-button>
-          <el-button type="text" size="small" @click="del(scope.row)">{{deltext(scope.row.active)}}</el-button>
+          <!--添加设置，只有为空状态0 的时候才能修改和删除，否则隐藏按钮-->
+          <el-button @click="edit(scope.row)" type="text" size="small" v-if="scope.row.status==0">修改</el-button>
+          <el-button type="text" size="small" v-if="scope.row.status==0" @click="del(scope.row)">删除</el-button>
+          <el-button @click="detail(scope.row)" type="text" size="small">详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -91,6 +102,7 @@
 
 <script>
   import EditRooms from '@/components/rooms/edit'
+  import DetailRooms from '@/components/rooms/details'
   export default {
     inject:['reload'],
     name:"rooms",
@@ -99,14 +111,18 @@
         search:{
           id:"",
           floorId:"",
-          roomTypeid:""
+          roomTypeid:"",
+          normalPrice:"",
+          status:""
         },
         queryParams:{
           pageNo:1,
           pageSize:10,
           id:"",
           floorId:"",
-          roomTypeid:""
+          roomTypeid:"",
+          normalPrice:"",
+          status:""
         },
         tableData:{},
         floors:{},
@@ -137,6 +153,14 @@
           this.guestTypes=data;
         });
       },
+      statusformat(row, column, cellValue, index){
+        if(cellValue==0)
+          return "空房";
+        else if(cellValue==1)
+          return "已预订";
+        else if (cellValue==2)
+          return "入住"
+      },
       changePageNo(i){
         this.queryParams.pageNo=i;
       },
@@ -166,6 +190,19 @@
           },
           area:['800px','600px'],
           title: '修改客房信息',
+          shadeClose: false,
+          shade :true
+        });
+      },
+      detail(row){
+        this.$layer.iframe({
+          content: {
+            content: DetailRooms, //传递的组件对象
+            parent: this,//当前的vue对象
+            data:{id:row.id}//props
+          },
+          area:['800px','600px'],
+          title: '客房信息详情',
           shadeClose: false,
           shade :true
         });
