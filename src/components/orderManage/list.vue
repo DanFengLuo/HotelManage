@@ -10,30 +10,22 @@
           <el-input placeholder="请输入房间编号" v-model="search.originalRoomId" class="input-with-select" style="width: 200px">
             <el-button slot="append" icon="el-icon-search" @click="findData"></el-button>
           </el-input>
-<!--          <el-input placeholder="请输入预定状态" v-model="search.bookStatus" class="input-with-select" style="width: 200px">-->
-<!--            <el-button slot="append" icon="el-icon-search" @click="findData"></el-button>-->
-<!--          </el-input>-->
-          <el-select v-model="search.bookStatus" filterable placeholder="请选择预定状态" style="width: 200px"  @change="findData">
-            <el-option
-              :key="search.bookStatus"
-              :label="已预定"
-              :value="0">已预定
-            </el-option>
-            <el-option
-              :key="search.bookStatus"
-              :label="已取消"
-              :value="1">已取消
-            </el-option>
-            <el-option
-              :key="search.bookStatus"
-              :label="已入住"
-              :value="2">已入住
-            </el-option>
-            <el-option
-              :key="search.bookStatus"
-              :label="已取消"
-              :value="3">已取消
-            </el-option>
+          <el-input placeholder="请输入预定人姓名" v-model="search.residents" class="input-with-select" style="width: 200px">
+            <el-button slot="append" icon="el-icon-search" @click="findData"></el-button>
+          </el-input>
+<!--          <el-select v-model="search.roomTypeid" filterable placeholder="请选择客房类型" style="width: 200px"  @change="findData">-->
+<!--            <el-option-->
+<!--              v-for="item in guestTypes"-->
+<!--              :key="item.id"-->
+<!--              :label="item.typeName"-->
+<!--              :value="item.id">-->
+<!--            </el-option>-->
+<!--          </el-select>-->
+          <el-select v-model="search.originalRoomId" filterable placeholder="请选择预定状态" style="width: 200px"  @change="findData">
+            <el-option  label="已预定" value="0">已预定</el-option>
+            <el-option  label="已取消" value="1">已取消</el-option>
+            <el-option  label="已入住" value="2">已入住</el-option>
+            <el-option  label="已退房" value="3">已退房</el-option>
           </el-select>
         </el-col>
       </el-row>
@@ -72,17 +64,17 @@
         prop="residents"
         label="预定人">
       </el-table-column>
-      <el-table-column
-        prop="credentialsType"
-        label="证件类型">
-      </el-table-column>
-      <el-table-column
-        prop="credentialsNum"
-        label="证件号">
-      </el-table-column><el-table-column
-        prop="phone"
-        label="联系方式">
-      </el-table-column>
+<!--      <el-table-column-->
+<!--        prop="credentialsType"-->
+<!--        label="证件类型">-->
+<!--      </el-table-column>-->
+<!--      <el-table-column-->
+<!--        prop="credentialsNum"-->
+<!--        label="证件号">-->
+<!--      </el-table-column><el-table-column-->
+<!--        prop="phone"-->
+<!--        label="联系方式">-->
+<!--      </el-table-column>-->
       <el-table-column
         prop="arrivalTime"
         label="抵店时间">
@@ -112,10 +104,10 @@
         label="预定状态"
       :formatter="bookStatusformat">
       </el-table-column>
-      <el-table-column
-        prop="remarks"
-        label="备注">
-      </el-table-column>
+<!--      <el-table-column-->
+<!--        prop="remarks"-->
+<!--        label="备注">-->
+<!--      </el-table-column>-->
       <!--<el-table-column-->
       <!--prop="active"-->
       <!--label="是否有效"-->
@@ -125,6 +117,7 @@
         <template slot-scope="scope">
           <el-button @click="edit(scope.row)" type="text" size="small">修改</el-button>
           <el-button type="text" size="small" @click="del(scope.row)">{{deltext(scope.row.active)}}</el-button>
+          <el-button @click="detail(scope.row)" type="text" size="small">详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -141,6 +134,8 @@
 
 <script>
   import EditOrderManage from '@/components/orderManage/edit'
+  import DetailOrderManage from '@/components/orderManage/details'
+
   export default {
     inject:['reload'],
     name:"orderManage",
@@ -149,16 +144,19 @@
         search:{
           id:"",
           originalRoomId:"",
-          bookStatus:""
+          bookStatus:"",
+          residents:""
         },
         queryParams:{
           pageNo:1,
           pageSize:10,
           id:"",
           originalRoomId:"",
-          bookStatus:""
+          bookStatus:"",
+          residents:""
         },
-        tableData:{}
+        tableData:{},
+        guestTypes:{}
       }
     },
     created(){
@@ -178,6 +176,9 @@
         this.get("orderManage/list",(data)=>{
           this.tableData=data;
         },this.queryParams);
+        this.get("rooms/getAllGuestType",(data)=>{
+          this.guestTypes=data;
+        });
       },
       bookStatusformat(row, column, cellValue, index){
         if(cellValue==0)
@@ -221,6 +222,19 @@
           },
           area:['800px','600px'],
           title: '修改预定信息',
+          shadeClose: false,
+          shade :true
+        });
+      },
+      detail(row){
+        this.$layer.iframe({
+          content: {
+            content: DetailOrderManage, //传递的组件对象
+            parent: this,//当前的vue对象
+            data:{id:row.id}//props
+          },
+          area:['800px','600px'],
+          title: '预定信息详情',
           shadeClose: false,
           shade :true
         });

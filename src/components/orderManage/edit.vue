@@ -5,10 +5,21 @@
 <!--            <el-input v-model="ruleForm.id"></el-input>-->
 <!--        </el-form-item>-->
         <el-form-item label="预定房间编号" prop="originalRoomId">
-            <el-input  v-model="ruleForm.originalRoomId"></el-input>
+          <el-select v-model="ruleForm.originalRoomId" filterable placeholder="请选择预定房间号" style="width: 200px"  >
+            <el-option
+              v-for="item in rooms"
+              :key="item.id"
+              :label="item.id"
+              :value="item.id">
+            </el-option>
+          </el-select>
+         <!-- <el-select v-model="ruleForm.originalRoomId" placeholder="请选择预定房间号">
+            <el-option v-for="entry in rooms" :label="entry.id" :value="entry.id" :key="entry.id"></el-option>
+          </el-select>-->
+           <!-- <el-input  v-model="ruleForm.originalRoomId"></el-input>-->
         </el-form-item>
         <el-form-item label="押金" prop="deposit">
-            <el-input  v-model="ruleForm.deposit"></el-input>
+          <el-input   v-model.number="ruleForm.deposit" size="medium" type="number" :max="99999999" ></el-input>
         </el-form-item>
         <el-form-item label="预定人" prop="residents">
             <el-input  v-model="ruleForm.residents"></el-input>
@@ -23,32 +34,39 @@
             <el-input  v-model="ruleForm.phone"></el-input>
         </el-form-item>
         <el-form-item label="抵店时间" prop="arrivalTime">
-<!--          <el-date-picker-->
-<!--            v-model="ruleForm.arrivalTime"-->
-<!--            type="datetime"-->
-<!--            aria-label="抵店时间"-->
-<!--            itemprop="arrivalTime"-->
-<!--            @change="ruleForm.arrivalTime"-->
-<!--            placeholder="选择日期时间">-->
-<!--          </el-date-picker>-->
-          <el-input  v-model="ruleForm.arrivalTime"></el-input>
+          <el-date-picker
+            v-model="ruleForm.arrivalTime"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            :picker-options="pickerOptions0"
+            placeholder="选择日期">
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="离店时间" prop="leaveTime">
-<!--          <el-date-picker-->
-<!--            v-model="ruleForm.leaveTime"-->
-<!--            type="datetime"-->
-<!--            aria-label="离店时间"-->
-<!--            itemprop="leaveTime"-->
-<!--            @change="ruleForm.leaveTime"-->
-<!--            placeholder="选择日期时间">-->
-<!--          </el-date-picker>-->
-            <el-input  v-model="ruleForm.leaveTime"></el-input>
+            <el-date-picker
+              v-model="ruleForm.leaveTime"
+              type="datetime"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :picker-options="pickerOptions0"
+              placeholder="选择日期">
+            </el-date-picker>
         </el-form-item>
         <el-form-item label="入住人数" prop="personNum">
-          <el-input  v-model="ruleForm.personNum"></el-input>
+          <el-input   v-model.number="ruleForm.leaguerScore" size="medium" type="number" :max="9999" ></el-input>
         </el-form-item>
         <el-form-item label="会员编号" prop="memberId">
-            <el-input  v-model="ruleForm.memberId"></el-input>
+          <el-select v-model="ruleForm.memberId" filterable placeholder="请选择预定会员编号" style="width: 200px"  >
+            <el-option
+              v-for="item in leaguers"
+              :key="item.id"
+              :label="item.id"
+              :value="item.id">
+            </el-option>
+          </el-select>
+          <!--<el-select v-model="ruleForm.memberId" placeholder="请选择会员编号">
+            <el-option v-for="entry in leaguers" :label="entry.id" :value="entry.id" :key="entry.id"></el-option>
+          </el-select>-->
+            <!--<el-input  v-model="ruleForm.memberId"></el-input>-->
         </el-form-item>
 <!--        <el-form-item label="预定状态" prop="bookStatus">-->
 <!--            <el-input  v-model="ruleForm.bookStatus"></el-input>-->
@@ -70,10 +88,51 @@
       props:["id"],
     data () {
         name:"orderManageedit"
+      /*验证手机号*/
+      let checkPhone = (rule, value, callback) => {
+        const phoneReg = /^1[3|4|5|7|8][0-9]{9}$/
+        if (!value) {
+          return callback(new Error("电话号码不能为空"))
+        }
+        setTimeout(() => {
+          // Number.isInteger是es6验证数字是否为整数的方法,但是我实际用的时候输入的数字总是识别成字符串
+          // 所以在前面加了一个+实现隐式转换
+          if (!Number.isInteger(+value)) {
+            callback(new Error("请输入数字值"))
+          } else {
+            if (phoneReg.test(value)) {
+              callback()
+            } else {
+              callback(new Error("电话号码格式不正确"))
+            }
+          }
+        }, 100)
+      };
+      /*验证身份证号*/
+      let checkcredentialsNum = (rule, value, callback) => {
+        const credentialsNumReg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
+        if (!value) {
+          return callback(new Error("身份证不能为空"))
+        }
+        setTimeout(() => {
+          // Number.isInteger是es6验证数字是否为整数的方法,但是我实际用的时候输入的数字总是识别成字符串
+          // 所以在前面加了一个+实现隐式转换
+          if (!Number.isInteger(+value)) {
+            callback(new Error("请输入数字值"))
+          } else {
+            if (credentialsNumReg.test(value)) {
+              callback()
+            } else {
+              callback(new Error("身份证号格式不正确"))
+            }
+          }
+        }, 100)
+      };
       return {
+        rooms:[],
+        leaguers:[],
           ruleForm:{
             id:"",
-            orderManagename:"",
             originalRoomId:"",
             deposit:"",
             residents:"",
@@ -87,11 +146,24 @@
             bookStatus:"",
             remarks:""
           },
-          rules: {
-            orderManagename: [
-                { required: true, message: '请输入商品类型名称', trigger: 'blur' },
-                { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
-            ]
+        pickerOptions0: {
+          disabledDate(time) {
+            return time.getTime() < Date.now();
+          }
+        },
+
+
+
+
+
+      rules: {
+          /*验证手机号*/
+        phone: [
+          { required: true, trigger: 'blur',validator: checkPhone }//设置全局变量
+        ],
+        credentialsNum: [
+          { required: true, trigger: 'blur',validator: checkcredentialsNum }//设置全局变量
+        ],
 
         },
         buttonText:"创建"
@@ -99,6 +171,11 @@
       }
     },
     created(){
+        /*获取所有的房间编号*/
+      this.get("orderManage/getAllRoomsAndLeaguers",(data)=>{
+        this.rooms=data.rooms;
+        this.leaguers=data.leaguers;
+      });
         if(this.id){
              this.get("orderManage/getOne",(data)=>{
                 this.ruleForm=data;
