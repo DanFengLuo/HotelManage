@@ -41,7 +41,7 @@
                 <template slot="title"><p style="color:#ffffff;font-size: 14px; ">
                   <img src="../../assets/people_msg.png" style="width: 16px;height: 16px"/>&nbsp;&nbsp;房客管理</p>
                 </template>
-                <el-menu-item index="客房预订管理">客房预订管理</el-menu-item>
+                <el-menu-item index="客房预订管理" route="orderManage">客房预订管理</el-menu-item>
                 <el-menu-item index="预订转入住">预订转入住</el-menu-item>
                 <el-menu-item index="入住登记管理">入住登记管理</el-menu-item>
                 <el-menu-item index="换房管理">换房管理</el-menu-item>

@@ -4,7 +4,7 @@
       <el-row>
         <el-col :span="2"><el-button type="primary" @click="add">添加</el-button></el-col>
         <el-col :span="22">
-          <el-input placeholder="请输入类型名称" v-model="search.goodsTypename" class="input-with-select" style="width: 200px">
+          <el-input placeholder="请输入预定编号" v-model="search.id" class="input-with-select" style="width: 200px">
             <!--<el-select v-model="search.active" style="width:80px" slot="prepend" placeholder="请选择">-->
             <!--<el-option label="全部" value=""></el-option>-->
             <!--<el-option label="有效" value="1"></el-option>-->
@@ -26,11 +26,70 @@
         label="编号">
       </el-table-column>
       <el-table-column
-        prop="goodsTypename"
-        label="商品类型">
+        prop="originalRoomId"
+        label="预定房间编号">
       </el-table-column>
       <el-table-column
-        prop="goodsTypenotes"
+        prop="rooms.guestType.typeName"
+        label="房间类型">
+      </el-table-column>
+      <el-table-column
+        prop="rooms.normalPrice"
+        label="标准价">
+      </el-table-column>
+      <el-table-column
+        prop="rooms.discountPrice"
+        label="折后价">
+      </el-table-column>
+      <el-table-column
+        prop="deposit"
+        label="押金">
+      </el-table-column>
+      <el-table-column
+        prop="residents"
+        label="预定人">
+      </el-table-column>
+      <el-table-column
+        prop="credentialsType"
+        label="证件类型">
+      </el-table-column>
+      <el-table-column
+        prop="credentialsNum"
+        label="证件号">
+      </el-table-column><el-table-column
+        prop="phone"
+        label="联系方式">
+      </el-table-column>
+      <el-table-column
+        prop="arrivalTime"
+        label="抵店时间">
+      </el-table-column>
+      <el-table-column
+        prop="leaveTime"
+        label="离店时间">
+      </el-table-column>
+      <el-table-column
+        prop="personNum"
+        label="入住人数">
+      </el-table-column>
+<!--      <el-table-column-->
+<!--        prop="操作员"-->
+<!--        label="userId">-->
+<!--      </el-table-column>-->
+      <el-table-column
+        prop="memberId"
+        label="会员编号">
+      </el-table-column>
+<!--      <el-table-column-->
+<!--        prop="会员价"-->
+<!--        label="memberId">-->
+<!--      </el-table-column>-->
+      <el-table-column
+        prop="bookStatus"
+        label="预定状态">
+      </el-table-column>
+      <el-table-column
+        prop="remarks"
         label="备注">
       </el-table-column>
       <!--<el-table-column-->
@@ -38,7 +97,6 @@
       <!--label="是否有效"-->
       <!--:formatter="activeformat">-->
       <!--</el-table-column>-->
-
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button @click="edit(scope.row)" type="text" size="small">修改</el-button>
@@ -58,19 +116,19 @@
 </template>
 
 <script>
-  import EditGoodsType from '@/components/goodsType/edit'
+  import EditOrderManage from '@/components/orderManage/edit'
   export default {
     inject:['reload'],
-    name:"goodsType",
+    name:"orderManage",
     data () {
       return {
         search:{
-          goodsTypename:""
+          id:""
         },
         queryParams:{
           pageNo:1,
           pageSize:10,
-          goodsTypename:""
+          id:""
         },
         tableData:{}
       }
@@ -89,7 +147,7 @@
     mounted(){},
     methods:{
       getData(){
-        this.get("goodsType/list",(data)=>{
+        this.get("orderManage/list",(data)=>{
           this.tableData=data;
         },this.queryParams);
       },
@@ -106,12 +164,12 @@
       add(){
         this.$layer.iframe({
           content: {
-            content: EditGoodsType, //传递的组件对象
+            content: EditOrderManage, //传递的组件对象
             parent: this,//当前的vue对象
             data:{}//props
           },
           area:['800px','600px'],
-          title: '添加商品类型',
+          title: '添加预定信息',
           shadeClose: false,
           shade :true
         });
@@ -119,18 +177,18 @@
       edit(row){
         this.$layer.iframe({
           content: {
-            content: EditGoodsType, //传递的组件对象
+            content: EditOrderManage, //传递的组件对象
             parent: this,//当前的vue对象
             data:{id:row.id}//props
           },
           area:['800px','600px'],
-          title: '修改商品类型',
+          title: '修改预定信息',
           shadeClose: false,
           shade :true
         });
       },
       del(row){
-        this.delete("goodsType/del",row.id,row.active);
+        this.delete("orderManage/del",row.id,row.active);
       },
       deltext(active){
         return active==1?"删除":"恢复"
