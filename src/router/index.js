@@ -10,7 +10,7 @@ import GoodsType from '@/components/goodsType/list'
 import Rooms from '@/components/rooms/list'
 import Orderlist from '@/components/orderlist/list'
 import OrderManage from '@/components/orderManage/list'
-
+import ChangeRoom from '@/components/ChangeRoom/list'
 Vue.use(Router)
 
 export default new Router({
@@ -65,6 +65,11 @@ export default new Router({
           path:'/orderlist',
           name:'orderlist',
           component:Orderlist
+        },
+        {
+          path:'/ChangeRoom',
+          name:'ChangeRoom',
+          component:ChangeRoom
         }
       ]
     }
